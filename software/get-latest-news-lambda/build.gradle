@@ -1,0 +1,44 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.samupert'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+
+    // AWS Lambda
+    implementation 'com.amazonaws:aws-lambda-java-core:1.2.2'
+    implementation 'com.amazonaws:aws-lambda-java-events:3.11.2'
+    runtimeOnly 'com.amazonaws:aws-lambda-java-log4j2:1.5.1'
+
+    // JSON Serialization and deserialization
+    implementation 'com.google.code.gson:gson:2.10.1'
+
+    // HTTP Client
+    implementation 'org.apache.httpcomponents:httpclient:4.5.14'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+task packageJar(type: Zip) {
+    into('lib') {
+        from(jar)
+        from(configurations.runtimeClasspath)
+    }
+}
+
+java {
+    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_17
+}
+
+build.dependsOn packageJar
